@@ -75,8 +75,8 @@ InvalidResponse = namedtuple('InvalidResponse', ('data', 'defected_key'))
 class MockResponseGET:
     CALLED_LOG_MSG = 'Request is sent'
 
-    def __init__(self, random_timestamp=None, http_status=HTTPStatus.OK,
-                 **kwargs):
+    def __init__(self, *args, random_timestamp=None,
+                 http_status=HTTPStatus.OK, **kwargs):
         self.random_timestamp = random_timestamp
         self.status_code = http_status
         self.reason = ''
