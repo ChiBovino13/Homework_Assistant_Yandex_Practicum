@@ -103,6 +103,7 @@ def parse_status(homework):
 
 def main():
     """Основная логика работы бота."""
+    empty_message = ''
     if not check_tokens():
         logging.critical(
             'Один или несколько токенов недоступны. Процесс завершен.'
@@ -112,27 +113,19 @@ def main():
     bot = telegram.Bot(token=TELEGRAM_TOKEN)
     while True:
         try:
-            try:
-                api_response = get_api_answer(timestamp)
-            except Exception as e:
-                logging.error(f'Ошибка ответа API {e}.')
-            try:
-                result = check_response(api_response)
-            except Exception as e:
-                logging.error(f'Ошибка ответа API {e}.')
+            api_response = get_api_answer(timestamp)
+            result = check_response(api_response)
             if len(result) > 0:
                 logging.debug('Появился новый результат.')
-                try:
-                    message = parse_status(result[0])
-                except Exception as e:
-                    logging.error(f'Ошибка функции parse_status {e}.')
-                try:
-                    send_message(bot, message)
-                    logging.debug('Сообщение отправлено!')
-                except Exception as e:
-                    logging.error(f'Сообщение не удалось отправить {e}.')
-                if not api_response.get('current_date') is None:
-                    timestamp = api_response.get('current_date')
+            message = parse_status(result[0])
+            if message != empty_message:
+                send_message(bot, message)
+                logging.debug('Сообщение {message} отправлено')
+            else:
+                logging.debug('Статус не изменился')
+                empty_message = message
+            if not api_response.get('current_date') is None:
+                timestamp = api_response.get('current_date')
         except Exception as error:
             message = f'Сбой в работе программы: {error}'
             logging.critical(message)
