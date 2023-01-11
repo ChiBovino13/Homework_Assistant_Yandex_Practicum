@@ -1,7 +1,6 @@
 import telegram
 import requests
 import os
-from dotenv import load_dotenv
 import logging
 import time
 import sys
@@ -35,9 +34,11 @@ HOMEWORK_VERDICTS = {
 }
 previous_status = ''
 
+
 def check_tokens():
     """Проверяет доступность переменных окружения."""
     return all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
+
 
 def send_message(bot, message):
     """Отправляет сообщение в Telegram чат."""
@@ -58,7 +59,7 @@ def get_api_answer(timestamp):
     if response.status_code != 200:
         raise exceptions.StatusCodeServerAccessException(
             f'Сервер недоступен. Ошибка {response.status_code}.'
-            )
+        )
     return response.json()
 
 
@@ -76,10 +77,7 @@ def check_response(response):
 
 
 def parse_status(homework):
-    """
-    Извлекает из информации о конкретной
-    домашней работе статус этой работы.
-    """
+    """Извлекает статус работы."""
     status = homework.get('status')
     verdict = HOMEWORK_VERDICTS.get(status)
     homework_name = homework.get('homework_name')
@@ -140,6 +138,7 @@ def main():
             logging.critical(message)
         finally:
             time.sleep(RETRY_PERIOD)
+
 
 if __name__ == '__main__':
     main()
