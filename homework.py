@@ -24,6 +24,7 @@ logging.basicConfig(
     format='%(asctime)s, %(levelname)s, %(name)s, %(message)s',
 )
 
+
 def check_tokens():
     """Проверяет доступность переменных окружения."""
     return all([PRACTICUM_TOKEN, TELEGRAM_TOKEN, TELEGRAM_CHAT_ID])
