@@ -1,5 +1,3 @@
-import requests
-
 class StatusCodeServerAccessException(Exception):
     """Ошибка доступа сервера."""
     pass

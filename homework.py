@@ -1,10 +1,12 @@
-import telegram
 import requests
+import telegram
 import os
 import logging
 import time
 import sys
 import exceptions
+from http import HTTPStatus
+from settings import RETRY_PERIOD, ENDPOINT, HEADERS, HOMEWORK_VERDICTS
 
 from dotenv import load_dotenv
 
@@ -15,25 +17,12 @@ PRACTICUM_TOKEN = os.getenv('TOKEN')
 TELEGRAM_TOKEN = os.getenv('TG_TOKEN')
 TELEGRAM_CHAT_ID = os.getenv('ID')
 
-RETRY_PERIOD = 600
-ENDPOINT = 'https://practicum.yandex.ru/api/user_api/homework_statuses/'
-HEADERS = {'Authorization': f'OAuth {PRACTICUM_TOKEN}'}
-
 logging.basicConfig(
     level=logging.DEBUG,
     filename='main.log',
     filemode='w',
     format='%(asctime)s, %(levelname)s, %(name)s, %(message)s',
 )
-
-
-HOMEWORK_VERDICTS = {
-    'approved': 'Работа проверена: ревьюеру всё понравилось. Ура!',
-    'reviewing': 'Работа взята на проверку ревьюером.',
-    'rejected': 'Работа проверена: у ревьюера есть замечания.'
-}
-previous_status = ''
-
 
 def check_tokens():
     """Проверяет доступность переменных окружения."""
@@ -56,7 +45,7 @@ def get_api_answer(timestamp):
         response = requests.get(ENDPOINT, headers=HEADERS, params=payload)
     except requests.RequestException as error:
         raise exceptions.RequestException(f'Ошибка эндпоинта {error}.')
-    if response.status_code != 200:
+    if response.status_code != HTTPStatus.OK:
         raise exceptions.StatusCodeServerAccessException(
             f'Сервер недоступен. Ошибка {response.status_code}.'
         )
@@ -81,6 +70,7 @@ def parse_status(homework):
     status = homework.get('status')
     verdict = HOMEWORK_VERDICTS.get(status)
     homework_name = homework.get('homework_name')
+    previous_status = ''
     if status is None:
         raise exceptions.HomeWorkStatusException(
             'У работы нет статуса.'
@@ -93,7 +83,6 @@ def parse_status(homework):
         raise exceptions.HomeWorkNameException(
             'Нет названия домашней работы.'
         )
-    global previous_status
     if status == previous_status:
         return f'Статус работы не изменился "{homework_name}". {verdict}'
     previous_status = status
