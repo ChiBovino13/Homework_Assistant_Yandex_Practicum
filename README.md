@@ -9,3 +9,6 @@ Telegram-бот, который обращается к API сервиса Пр�
 ![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)  \
 ![Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)  \
 ![DjangoREST](https://img.shields.io/badge/DJANGO-REST-ff1709?style=for-the-badge&logo=django&logoColor=white&color=ff1709&labelColor=gray) 
+
+
+**♘😈  Автор:  ♙🎉** [Дарья Горячева](https://github.com/ChiBovino13)
